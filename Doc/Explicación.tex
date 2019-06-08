@@ -41,7 +41,7 @@
 
 \begin{document}
 	\title{Fundamentos de Bases de Datos \\
-		Proyecto Final\\ Empresas inmobiliarias
+		Proyecto Final\\ Empresas Inmobiliarias
 	} 
 	\author{Díaz Gómez Silvia \\
 		Eugenio Aceves Narciso Isaac \\
@@ -51,9 +51,90 @@
 	
 	Se nos pide diseñar una base de datos para poder almacenar toda la información de  las inmobiliarias han proporcionado. Como el almacenamiento de la información debe estar en una base de datos relacional el diseño consta de tres partes, la primera parte corresponde al modelo Entidad-Relación, la segunda parte a la traducción del modelo entidad relación al modelo relacional y finalmente la normalización que nos permite quitar redundancia en las tablas generadas. 
 	
-	\section{Diagrama E/R del caso de uso}
+	\section{Modelo E/R}
 	
-	El siguiente diagrama esta basado de acuerdo a las especificaciones en el caso de uso.
+	A continuación se presenta la explicación del diseño de acuerdo al modelo entidad-relación.
+	
+	\subsection{Entidades} 
+	\begin{itemize}
+		\item Fuertes
+		\begin{description}[leftmargin=8em,style=nextline]
+			\item [Propiedad] Esta entidad es necesaria ya que se nos pide llevar un control sobre propiedades. Tiene como atributos 
+			\textit{Id\_propiedad} es la llave primaria para esta endidad, \textit{dirección, tamaño, fecha\_construccion, valor catastral, estado propiedad, antigüedad } este ultimo es una tributo calculado.\\
+			
+			\item [Colonia] Se decidio crear esta entidad para saber la colonia en que se encuentra una propiedad y conocer si cerca de las propiedades se hay algun servicio de transporte público y tiendas departamentales. Tiene como atributos \textit{Nombre, CP, numero de habitantes}.\\
+			
+			\item [Dueño] Esta entidad sirve para llevar el control de los dueñosd e las propiedades. Tiene como atributos \textit{ id\_dueño} que corresponde a la llave primaria y \textit{monto\_invertido} que indica cuanto dinero a invertido el dueño para reparar a la propiedad adquirida.\\
+			
+			\item [Inmobiliaria] Esta entidad representa las empresas que adquieren las propiedad y unicamente tiene el atributo \textit{id\_inmobiliaria} que funciona como identificador unico.\\
+			
+			\item [Estado] La intención de esta entidad es porque es importante saber en que estados de la republica mexicana se encuentran las propiedades.  Tiene como atributo \textit{nombre}.\\
+			
+			
+			\item [Seguro] Las propiedades pueden contar con un seguro por lo tanto se decidio crear esta entidad que administra esta información. Los atributos importantes para esta entidad son \textit{numero de poliza} que funciona como la llave primaria, \textit{monto\_anual, cobertura, empresa}.\\
+			
+			\item [Inmueble] Esta entidad se deriva de propiedad, casa y departamento son inmuebles y como existen cosas en comun para estas dos se vio necesario crear esta entidad, por lo tanto esta entidad funciona como entidad padre.\\
+			
+			\item [Casa] Es la entidad hijo de inmueble y como nos interesa cosas especificas para las propiedades que son casas se crea esta entidad.\\
+			
+			\item [Departamento] Al igual que casa, se necesita saber tener información de propiedades que son departamentos por lo tanto es necesario crear un entidad departamento que deriva de inmueble.\\
+			
+			\item [Terreno] Terreno se deriva de propiedad. Es necesaria una entidad terreno ya que representa la extensión de superficie y no necesariamente tiene una construcción y como si nos interesa saber si tiene o no alguna construcción distinta a una casa o departamento entonces tiene como atributo construcción que es de tipo boolean.
+			
+			\item [Edificio] Esat entidad fue necesaria crearla porque necesitamos conocer si el edificio donde se encuentra un departamentos tiene ciertas amenidades como esta infomación no se puede poner en la entidad departamento fue necesario hacer otra entidad que contuviese esa información.
+			
+			
+		\end{description}
+		\item Débiles
+		\begin{description}[leftmargin=8em,style=nextline]
+			\item [Municipio] Esta entidad representa a los municipios y fue necesaria crearla ya que también nos interesa conocer el municipio en donde se ubica alguna propiedad, es un entidad debil porque los nombres de municipios no son unicos así que al ser entidad debil siempre estara asociado a la infomación la entidad estado.\\
+			
+			\item [Transporte] Representa a un catalogo que indica una estación de metro, una base de taxis, una parada de algun otro transporte público y es una entidad debil porque debe estar asiciado a una colonia.\\
+			\item [Tienda departamental] De la misma forma que la entidad transporte es necesaria una entidad tienda departamental que contiene la infomación de posibles tiendas departamentales que puedan haber en una determinda colonia.\\
+		\end{description}
+	\end{itemize}
+	
+	\subsection{Relaciones}
+	\begin{itemize}
+		\item Fuertes
+		
+		\begin{description}[leftmargin=9em,style=nextline]
+			\item[Ser dueño] Esta relación esta asociada con la entidad propiedad 
+			y dueño. Además esta relación tiene atributos que nos permite tener acceso a infomación especifica sobre la cantidad, la fecha de compra y la fecha en la que se dejo de ser dueño de la propiedad.\\
+			
+			\item[Contar] Relación que esta asociada con servicios y propiedad y es una relacion de uno a muchos ya que una propiedad puede tener muchos servicios. \\
+			
+			\item[Pertenecer] Relación que asocia a la entidad colonia y propiedad, es una relación de uno a muchos porque muchas propiedades pueden estar en una misma colonia. \\
+			
+			\item[Ubicar] Relación de uno a muchos, muchas colonias pueden estar en un mismo municipio. Une la entidad colonia con municipio.\\
+			
+			\item[Vender] Esta relación esta asociada con la entidad propiedad y asesor y permite conocer la infomación de la venta de una propiedad, tiene como atributos el precio que es la cantidad a la que se vendio dicha propiedad y la fecha que indica la fecha de la venta.\\
+			
+			\item[Situar] Relación de pertenencia y relaciona la entidad departamento con edificio.\\
+			
+			\item[Revender] Esta relación esta asociada con la entidad propiedad e inmobiliaria, ya que una inmobiliaria puede vender las propiedades adquiridas y es necesario llevar un control de esta por lo tanto tiene como atributos el precio y la fecha de la venta. Es una relación de uno de muchos ya que una inmobiliaria puede vender varias propiedades.\\
+			
+			\item[Tener] Es una relación entre propiedad y seguro, es una relación de uno a muchos porque una propiedad puede tener varios seguros.\\
+			
+			\item[Venta historial] Esta relación nos sirve para poder tener infomación de las variaciones en los precios de las propiedades, que será un control mensual. \\
+			
+			\item[Ser encargado] Relaciona la entidad propiedad y asesor, y es una relación de muchos a muchos porque muchas propiedades pueden estar a cargo de varios asesores. \\
+			
+		\end{description}
+	\item Débiles
+\begin{description}[leftmargin=8em,style=nextline]
+			
+			\item[Estar] Es una relación de pertenencia que asocia un estado a un municipio. Relación de uno a muchos porque un estado puede tener varios municipios.\\
+			
+			\item[Tener transporte] Es una relación de pertenencia que asocia algun tipo de transpote público a una colonia. Relación de uno a muchos porque una colonia puede tener asociados varios tipos de transporte públicos. \\
+			
+			\item[Tener tienda] Es una relación de pertenencia que asocia a tienda departamental con colonia. Relación de uno a muchos porque en una colonia pueden encontarse varias tiendas departamentales. 
+		\end{description}
+	\end{itemize}
+	
+	
+	
+	En la siguiente figura \ref{ER} representa lo que se ha explicado en la parte de arriba.
 	
 	\begin{center}
 		\begin{figure}[H]
@@ -65,6 +146,39 @@
 	\end{center}
     \section{Modelo Relacional}
     
+    Esta sección consiste en hacer la traducción del diagrama Entidad-Relación de la figura \ref{ER} al modelo relacional donde se debe indicar las llaves primarias para cada tabla que se genere y sus correspondientes llaves foraneas.
+    
+    \begin{description}[leftmargin=9em,style=nextline]
+    	\item[Estado] Esta entidad se convierte en una tabla y su llave primaria es el unico atributo que tiene que es \underline{nombre}.
+    	\item[Estar] Esta relación pasa como llave foránea a Municipio. 
+    	\item[Municipio] Pasa a ser una tabla y tiene como llave primaria la combinación de los atributos \underline{nombre} y \underline{nombre\_estado}.
+    	\item[Colonia]  Esta entidad se convierte en una tabla y tiene como llave primaria el código postal \underline{CP}. Además tiene como llaves foraneas a los identificadores de la entidad municipio.
+    	\item[Transporte] Esta entidad debil se convierte en una tabla y su llave primaria esta compuesta por sus tres atributos \underline{nombre}, \underline{tipo} y \underline{CP}.
+    	\item[Tener transporte] Pasa como llave foránea a la tabla Transporte.
+    	\item[Tienda departamental] Esta entidad débil pasa a ser una tabla y su llave primaria se compone de los atributos \underline{nombre} y \underline{CP}.
+    	\item[Tener tienda] Pasa como llave foránea a la tabla Tienda departamental.
+    	\item[Propiedad] Esta entidad se convierte en tabla y su llave primaria es \underline{id\_propiedad}.
+    	\item[Contar] Pasa como llave foránea a la tabla servicio.
+    	\item[Servicio] Se convirte en una tabla y tiene como llave primaria \underline{id\_servicio}, además tiene como llave foránea id\_propiedad.
+        \item[Ser dueño] La relación ser dueño se convierte en una tabla, teniendo como llaves foráneas id\_dueño y id\_propiedad.
+   	    \item[Dueño] Pasa a ser una tabla que tiene como llave primaria \underline{id\_dueño}.
+   	    \item[Revender] Esta relación se convierte en una tabla y tiene como llaves foráneas id\_propiedad, id\_dueño y id\_inmobiliaria.
+   	    \item[Inmbobiliaria] Se convierte en una tabla que tiene como llave primaria id\_inmobiliaria y id\_dueño. Además tiene como llave foránea al identificador de dueño.
+    	\item[Venta historial] Se convierte en un tabla que tiene como llaves foráneas a los identificadores de Propiedad e Inmobiliaria.
+    	\item[Ser encargado] Pasa a ser una tabla con llaves foráneas los identificadores de Propiedad y Asesor.
+    	\item[Asesor] Se convierte en una tabla que tiene como llave primara el atributo \underline{RFC}.
+    	\item[Inmueble] Se convierte en un tabla que tiene como llave primaria a \underline{id\_propiedad}, y tiene como llave foránea al identificador de Propiedad.
+    	\item[Terreno] Se convierte en un tabla que tiene como llave primaria a \underline{id\_propiedad}, y tiene como llave foránea al identificador de Propiedad.
+    	\item[Casa] Pasa a ser una tabla donde su llave primaria es \underline{id\_propiedad}, y tiene como llave foránea al identificador de Propiedad.
+    	\item[Departamento]  Pasa a ser una tabla donde su llave primaria es \underline{id\_propiedad}, y tiene como llaves foráneas a los identificadores de Propiedad y Edificio.
+    	\item[Edificio] Se convierte en una tabla y su llave primaria es id\_edificio.
+    	\item[Situar] Pasa como llave foránea a Departamento.
+    	\item[tener] Pasa como llave foránea a Seguro.
+    	\item[Seguro] Se convierte en tabla y su llave primaria es su atributo \underline{num\_poliza} y tiene como llave foránea al identificador de Propiedad.
+   \end{description} 	
+    
+    
+    En al figura \ref{MR} se muestra como queda el esquema de acuerdo a lo que se explicó anteriormente.
     \begin{center}
     	\begin{figure}[H]
     		\centering
