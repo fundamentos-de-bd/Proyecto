@@ -225,7 +225,7 @@ CREATE TABLE departamento (
     id_propiedad NUMBER(10),
     id_edificio NUMBER(10),
     area_lavado NUMBER(1) DEFAULT 0,
-    numero NUMBER(5),
+    numero VARCHAR(10),
     balcon NUMBER(1) DEFAULT 0,
     piso NUMBER(5)
 );
@@ -264,9 +264,9 @@ CREATE TABLE seguro (
 );
 
 ALTER TABLE seguro
-    ADD CONSTRAINT fk_seguro_inmueble
+    ADD CONSTRAINT fk_seguro_propiedad
     FOREIGN KEY (id_propiedad)
-    REFERENCES inmueble(id_propiedad)
+    REFERENCES propiedad(id_propiedad)
     ON DELETE CASCADE;
     
 ALTER TABLE seguro
@@ -343,7 +343,7 @@ ALTER TABLE propietario
 CREATE TABLE correo_electronico (
     curp VARCHAR(20),
     id_duenio NUMBER(10),
-    correo_electronico VARCHAR(30) NOT NULL
+    correo_electronico VARCHAR(40) NOT NULL
 );
 
 ALTER TABLE correo_electronico
@@ -440,6 +440,7 @@ CREATE TABLE vender (
     id_propiedad NUMBER(10),
     rfc VARCHAR(20),
     precio NUMBER(10),
+    fecha DATE DEFAULT CURRENT_DATE,
     porcentaje_comision NUMBER(5)
 );
 
@@ -451,13 +452,13 @@ ALTER TABLE vender
     ADD CONSTRAINT fk_vender_propiedad
     FOREIGN KEY (id_propiedad)
     REFERENCES propiedad(id_propiedad)
-    ON DELETE SET NULL; -- ¿Podría necesitarse saber cuantas propiedades ha vendido aunque se sepa cuales exactamente?
+    ON DELETE SET NULL;
     
 ALTER TABLE vender
     ADD CONSTRAINT fk_vender_asesor
     FOREIGN KEY (rfc)
     REFERENCES asesor(rfc)
-    ON DELETE SET NULL; -- ¿idem?
+    ON DELETE SET NULL;
     
 -- Tabla para la relación de 'ser_encargado'
 CREATE TABLE ser_encargado (
