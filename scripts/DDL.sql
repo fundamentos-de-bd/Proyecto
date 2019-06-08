@@ -9,7 +9,7 @@ ALTER TABLE estado
     
 -- Tabla para los municipios
 CREATE TABLE municipio (
-    nombre VARCHAR(20),
+    nombre VARCHAR(30),
     nombre_estado VARCHAR(20)
 );
 
@@ -26,9 +26,8 @@ ALTER TABLE municipio
 -- Tabla para las colonias
 CREATE TABLE colonia (
     cp NUMBER(10),
-    num_habitantes NUMBER(7) DEFAULT 0,
     nombre VARCHAR(30) NOT NULL,
-    nombre_municipio VARCHAR(20) NOT NULL,
+    nombre_municipio VARCHAR(30) NOT NULL,
     nombre_estado VARCHAR(20) NOT NULL
 );
 
@@ -41,6 +40,18 @@ ALTER TABLE colonia
 ALTER TABLE colonia
     ADD CONSTRAINT pk_colonia
     PRIMARY KEY (cp);
+    
+-- Tabla para los habitantes por colonia
+CREATE TABLE habitantes_colonia (
+    cp NUMBER(10),
+    num_habitantes NUMBER(10)
+);
+
+ALTER TABLE habitantes_colonia
+    ADD CONSTRAINT fk_habitantes_colonia
+    FOREIGN KEY (cp)
+    REFERENCES colonia(cp)
+    ON DELETE CASCADE;
  
  -- Tabla para los medios de transporte
  CREATE TABLE transporte (
@@ -61,7 +72,7 @@ ALTER TABLE transporte
 
 -- Tabla para las tiendas departamentales
 CREATE TABLE tienda_departamental (
-    nombre VARCHAR(30),
+    nombre VARCHAR(40),
     descripcion VARCHAR(100),
     cp NUMBER(10)
 );
@@ -77,19 +88,15 @@ ALTER TABLE tienda_departamental
     PRIMARY KEY (nombre, cp);
     
 -- Tabla para las propiedades
--- Nota: hay que cambiar el tipo del número de la propiedad a String
--- Nota: ¿porqué tamanio es String?
--- Nota: ¿porqué antiguedad es String? ¿Y porqué no es un valor calculado?
--- Nota: ¿porqué el valor castral es String?
 CREATE TABLE propiedad (
     id_propiedad NUMBER(10) GENERATED ALWAYS AS IDENTITY,
     calle VARCHAR(15),
     num_exterior NUMBER(10),
     cp NUMBER(10),
     tamanio VARCHAR(10),
-    antiguedad VARCHAR(10),
-    valor_castral VARCHAR(10),
-    estado_propiedad VARCHAR(50)
+    fecha_construccion DATE,
+    estado_propiedad VARCHAR(50),
+    valor_castral VARCHAR(10)
 );
 
 ALTER TABLE propiedad 
@@ -117,8 +124,12 @@ ALTER TABLE servicio
     ON DELETE CASCADE;
     
 ALTER TABLE servicio
+    ADD CONSTRAINT uq_servicio_propiedad
+    UNIQUE (tipo_servicio, id_propiedad);
+    
+ALTER TABLE servicio
     ADD CONSTRAINT pk_servicio
-    PRIMARY KEY (servicio);
+    PRIMARY KEY (id_servicio);
     
 -- Tabla para los terrenos
 CREATE TABLE terreno (
@@ -128,7 +139,7 @@ CREATE TABLE terreno (
 
 ALTER TABLE terreno 
     ADD CONSTRAINT ch_terreno_construc
-    CHECK (contruccion IN (0, 1));
+    CHECK (construccion IN (0, 1));
     
 ALTER TABLE terreno
     ADD CONSTRAINT fk_terreno_propiedad
@@ -168,14 +179,13 @@ CREATE TABLE casa (
 ALTER TABLE casa
     ADD CONSTRAINT fk_casa_inmueble
     FOREIGN KEY (id_propiedad)
-    REFERENCES inmuebles(id_propiedad);
+    REFERENCES inmueble(id_propiedad);
     
 ALTER TABLE casa
     ADD CONSTRAINT pk_casa
     PRIMARY KEY (id_propiedad);
     
 -- Tabla para los edificios de departamento
--- Nota: faltó poner id_edificio como llave
 CREATE TABLE edificio (
     id_edificio NUMBER(10) GENERATED ALWAYS AS IDENTITY,
     num_departamentos NUMBER(5) DEFAULT 0,
@@ -188,7 +198,7 @@ CREATE TABLE edificio (
 
 ALTER TABLE edificio 
     ADD CONSTRAINT ch_edificio_roof_garden
-    CHECK (roof_garde IN (0, 1));
+    CHECK (roof_garden IN (0, 1));
 
 ALTER TABLE edificio 
     ADD CONSTRAINT ch_edificio_elevador
@@ -211,7 +221,6 @@ ALTER TABLE edificio
     PRIMARY KEY (id_edificio);
     
 -- Tabla para los departamentos
--- Nota: hay que cambiar el tipo del numero a String
 CREATE TABLE departamento (
     id_propiedad NUMBER(10),
     id_edificio NUMBER(10),
@@ -225,7 +234,7 @@ ALTER TABLE departamento
     ADD CONSTRAINT ch_departamento_area_lavado
     CHECK (area_lavado IN (0, 1));
     
-ALTER TABLE edificio 
+ALTER TABLE departamento 
     ADD CONSTRAINT ch_departamento_balcon
     CHECK (balcon IN (0, 1));
     
@@ -246,7 +255,6 @@ ALTER TABLE departamento
     PRIMARY KEY (id_propiedad);
     
 -- Tabla para los seguros
--- No sé si sea conveniente cambiar la llave a (num_poliza, empresa)
 CREATE TABLE seguro (
     num_poliza NUMBER(10),
     id_propiedad NUMBER(10),
@@ -258,7 +266,7 @@ CREATE TABLE seguro (
 ALTER TABLE seguro
     ADD CONSTRAINT fk_seguro_inmueble
     FOREIGN KEY (id_propiedad)
-    REFERENCES inmueble(propiedad)
+    REFERENCES inmueble(id_propiedad)
     ON DELETE CASCADE;
     
 ALTER TABLE seguro
@@ -293,23 +301,38 @@ ALTER TABLE ser_duenio
 ALTER TABLE ser_duenio 
     ADD CONSTRAINT fk_ser_duenio_propiedad
     FOREIGN KEY (id_propiedad)
-    REFERENCES duenio(id_propiedad)
+    REFERENCES propiedad(id_propiedad)
     ON DELETE CASCADE;
     
+-- Tabla para las personas que son dueños
+CREATE TABLE persona (
+    curp VARCHAR(20),
+    fecha_nac DATE,
+    nombre VARCHAR(20),
+    paterno VARCHAR(20),
+    materno VARCHAR(20)
+);
+
+ALTER TABLE persona 
+    ADD CONSTRAINT pk_persona
+    PRIMARY KEY (curp);
+
 -- Tabla para propietarios
 CREATE TABLE propietario (
     curp VARCHAR(20),
-    id_duenio NUMBER(10),
-    fecha_nac DATE,
-    nombre VARCHAR(10),
-    paterno VARCHAR(10),
-    materno VARCHAR(10)
+    id_duenio NUMBER(10)
 );
 
 ALTER TABLE propietario
     ADD CONSTRAINT fk_propietario_duenio
     FOREIGN KEY (id_duenio)
     REFERENCES duenio(id_duenio)
+    ON DELETE CASCADE;
+    
+ALTER TABLE propietario
+    ADD CONSTRAINT fk_propietario_persona
+    FOREIGN KEY (curp)
+    REFERENCES persona(curp)
     ON DELETE CASCADE;
     
 ALTER TABLE propietario
@@ -324,18 +347,17 @@ CREATE TABLE correo_electronico (
 );
 
 ALTER TABLE correo_electronico
-    ADD CONSTRAINT fk_correo_propietario
+    ADD CONSTRAINT fk_correo_persona
     FOREIGN KEY (curp, id_duenio)
     REFERENCES propietario(curp, id_duenio)
     ON DELETE CASCADE;
-
+    
 -- Tabla para las inmobiliarias
 CREATE TABLE inmobiliaria (
-    id_inmobiliaria VARCHAR(10) GENERATED ALWAYS AS IDENTITY,
-    id_duenio VARCHAR(10)
+    id_inmobiliaria NUMBER(10) GENERATED ALWAYS AS IDENTITY,
+    id_duenio NUMBER(10)
 );
 
--- Nota: falta añadir la flecha que indica esta llave en el diagrama
 ALTER TABLE inmobiliaria 
     ADD CONSTRAINT fk_inmobiliaria_duenio
     FOREIGN KEY (id_duenio)
@@ -388,32 +410,42 @@ ALTER TABLE venta_historial
     ON DELETE SET NULL;
 
 -- Tabla para los asesores
--- Nota: ahora que lo pienso mejor, creo que sería mejor tener la tabla persona
--- con curp, nombre, apellidos y fecha de nacimiento.
--- Y tal vez otra para las direcciones de los asesores. Siento raro que esté
--- todo metido aquí
 CREATE TABLE asesor (
-    rfc VARCHAR(20),
+    rfc VARCHAR(15),
     nombre VARCHAR(20),
     paterno VARCHAR(20),
     materno VARCHAR(20),
-    fecha_nac VARCHAR(20),
-    calle VARCHAR(20),
-    numero VARCHAR(20),
-    cp NUMBER(10)
+    fecha_nac VARCHAR(20)
 );
 
 ALTER TABLE asesor 
     ADD CONSTRAINT pk_asesor
     PRIMARY KEY (rfc);
     
+-- Tabla para las direcciones de los asesores
+CREATE TABLE direccion_asesor (
+    rfc VARCHAR(15),
+    calle VARCHAR(20),
+    numero VARCHAR(20),
+    cp NUMBER(10)
+);
+
+ALTER TABLE direccion_asesor
+    ADD CONSTRAINT fk_direccion_asesor
+    FOREIGN KEY (rfc)
+    REFERENCES asesor(rfc);
+    
 -- Tabla para la relacion 'vender'
--- Nota: ¿no hace falta el porcentaje de gananacia del asesor?
 CREATE TABLE vender (
     id_propiedad NUMBER(10),
     rfc VARCHAR(20),
-    precio NUMBER(10)
+    precio NUMBER(10),
+    porcentaje_comision NUMBER(5)
 );
+
+ALTER TABLE vender
+    ADD CONSTRAINT ck_vender_comision
+    CHECK (porcentaje_comision <= 100);
 
 ALTER TABLE vender 
     ADD CONSTRAINT fk_vender_propiedad
