@@ -105,29 +105,55 @@ SELECT id_propiedad, calle, num_exterior, cp, tamanio, fecha_construccion,
 --===========================================================================
 
 
---Obtener los datos del dueño-propiedad con mayor antiguedad (que sigue siendolo)
---y el total anual que paga por sus servicios
+--Obtener los datos del los dueños-propiedad con mayor antiguedad (que siguen
+--siendo los dueños) y el total anual que paga por sus servicios
 SELECT *
-    FROM (SELECT id_propiedad, id_duenio
+    FROM ((SELECT id_propiedad, id_duenio
             FROM ((SELECT MIN(fecha_inicio) hola
                     FROM ser_duenio) CROSS JOIN ser_duenio)
             WHERE hola = fecha_inicio AND fecha_fin IS NULL)
-         NATURAL JOIN propiedad NATURAL JOIN dueño;
+        NATURAL JOIN propiedad NATURAL JOIN duenio
+        NATURAL JOIN 
+        (SELECT id_propiedad, SUM(monto_anual) anualidad_servicios
+            FROM ((SELECT id_propiedad, id_duenio
+                    FROM ((SELECT MIN(fecha_inicio) hola
+                            FROM ser_duenio) CROSS JOIN ser_duenio)
+                    WHERE hola = fecha_inicio AND fecha_fin IS NULL)
+                    NATURAL JOIN servicio)
+            GROUP BY id_propiedad)
+        );
 --===========================================================================
 
 
 --Mostrar el total de las ganancias de cada asesor registrado por medio de ventas
-SELECT SUM()
-    FROM vender
+--junto con el número de ventas que representa y sus datos.
+SELECT *
+    FROM asesor 
+        NATURAL JOIN
+        (SELECT rfc, COUNT(rfc) ventas_realizadas, SUM(precio*porcentaje_comision/100) ganancia_asesor
+            FROM vender
+            GROUP BY rfc);
 --===========================================================================
 
 
---Buscar la propiedad más barata en el estado X que cuente con al menos una
---amenidad y tenga un aeropuerto cercano
+--Recuperar todos los datos de los departamentos que tienen al menos una
+--amenidad ordenados por su valor castral.
+SELECT *
+    FROM (SELECT id_edificio
+            FROM edificio
+                UNPIVOT (numero
+                        FOR amenidad
+                        IN (roof_garden, elevador, salon_eventos, gimnasio, piscina)
+                )
+            HAVING SUM(numero) >= 1
+            GROUP BY id_edificio)
+            NATURAL JOIN departamento NATURAL JOIN propiedad
+    ORDER BY valor_castral;
 --===========================================================================
 
 
 --Mostrar el promedio de los valores castrales de las propiedades por estado
+
 --===========================================================================
 
 
