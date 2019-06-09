@@ -9,9 +9,11 @@ CREATE OR REPLACE TYPE precio_hist IS OBJECT (
     fecha DATE,
     precio NUMBER(10)
 );
+/
 
 -- Tipo para la tabla que se regresa
 CREATE OR REPLACE TYPE table_hist_precio IS TABLE OF precio_hist;
+/
 
 -- Función
 CREATE OR REPLACE FUNCTION hist_precios (id_propiedad NUMBER, fecha DATE) RETURN table_hist_precio IS
@@ -28,7 +30,7 @@ BEGIN
     FROM dual;
     RETURN r;
 END hist_precios;
-
+/
 /*
 Procedimiento que permite obtener un informe mensual de ventas de una inmobiliaria
 dada
@@ -78,20 +80,30 @@ BEGIN
     DBMS_OUTPUT.PUT_LINE ('DINERO INVERTIDO TOTAL: ' || TO_CHAR(ganancia));
     DBMS_OUTPUT.PUT_LINE ('GANANCIA NETA: ' || TO_CHAR(ganancia - inversion));
 END reporte_mensual;
+/
 
 /*
 Disparador que añade registros de venta a la tabla de historial de ventas en 
 cuanto se actualiza un precio en un mes diferentes.
 */
-CREATE OR REPLACE TRIGGER add_ventaS_historial
+-- Función auxiliar para obtener la fecha del último respaldo
+CREATE OR REPLACE FUNCTION get_last_date(seeked_id_propiedad NUMBER) RETURN DATE IS
+    d DATE;
+BEGIN
+    SELECT MAX(fecha)INTO d FROM venta_historial WHERE id_propiedad = seeked_id_propiedad;
+    RETURN d;
+END get_last_date;
+/
+
+CREATE OR REPLACE TRIGGER add_ventas_historial
     BEFORE UPDATE ON revender
     FOR EACH ROW
 BEGIN
-    IF INSERTING AND NOT (EXTRACT(MONTH FROM :OLD.FECHA) = EXTRACT(MONTH FROM :NEW.FECHA)) THEN
-        INSERT INTO venta_historial VALUES (:NEW.id_propiedad, :NEW.id_duenio, :NEW.id_inmobiliaria, :OLD.fecha, :OLD.precio);
+    IF INSERTING AND NOT (EXTRACT(MONTH FROM CURRENT_DATE) = EXTRACT(MONTH FROM get_last_date(:OLD.id_propiedad))) THEN
+        INSERT INTO venta_historial VALUES (:NEW.id_propiedad, :NEW.id_duenio, :NEW.id_inmobiliaria, CURRENT_DATE, :OLD.precio);
     END IF;  
 END;
-
+/
 /*
 Disparador que revisa que una propiedad no tenga múltiples dueños al mismo tiempo
 */
@@ -123,7 +135,7 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20000, 'NO PUEDE HABER DUEÑOS SIMLTÁNEOS DE UNA PROPIEDAD');
     END LOOP;
 END;
-
+/
 /*
 Disparador para verificar que todos los departamentos en el mismo edificio tengan
 la misma dirección
@@ -150,7 +162,7 @@ BEGIN
         END IF;
     END LOOP;
 END;
-
+/
 /*
 Disparador que revisa que todos los dueños que son inmobiliarias no hayan sido
 insertados antes como propietarios (personas)
@@ -168,7 +180,7 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20002, 'UN PROPIETARIO NO PUEDE SER INMOBILIARIA');
     END LOOP;
 END;
-
+/
 /*
 Disparador que revisa que todos los dueños que son propietarios (personas) no 
 hayan sido insertados antes como inmobiliarias.
@@ -186,3 +198,4 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20003, 'UNA INMOBILIARIA NO PUEDE SER PROPIETARIO');
     END LOOP;
 END;
+/
