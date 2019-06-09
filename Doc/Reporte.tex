@@ -1,0 +1,117 @@
+\documentclass[12pt]{article}
+\usepackage[spanish]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{fancyhdr}
+\usepackage{anysize} 
+\usepackage{color}
+\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
+
+\usepackage{vmargin}
+
+%% Graphics
+\usepackage{graphicx}
+\usepackage{color}
+\usepackage{gensymb}
+\usepackage{multirow}
+\usepackage{caption}
+\usepackage{float}
+\graphicspath{{img/}}
+\setlength{\parindent}{0cm}
+
+%pie de pagina
+\lfoot[]{}
+\cfoot[]{\thepage}
+\rfoot[]{Bases de Datos}	
+\renewcommand{\footrulewidth}{0.5pt}
+
+\fancypagestyle{miestilo}{
+\setmargins{2.5cm}       % margen izquierdo
+{1cm}                        % margen superior
+{16.5cm}                      % anchura del texto
+{23.42cm}                    % altura del texto
+{15pt}                           % altura de los encabezados
+{1cm}                           % espacio entre el texto y los encabezados
+{5pt}                             % altura del pie de página
+{1cm} 	
+\lhead[]{\includegraphics[width=2cm]{logo_unam}}
+\chead[]{\Huge {Proyecto Final \\
+		Inmobiliarias}\\
+	\large\today}
+\rhead[]{\includegraphics[width=2cm]{logo_FC}}
+}
+
+\fancypagestyle{miestilo2}{
+	\setmargins{2.5cm}       % margen izquierdo
+	{1cm}                        % margen superior
+	{16.5cm}                      % anchura del texto
+	{23cm}                    % altura del texto
+	{15pt}                           % altura de los encabezados
+	{1cm}                           % espacio entre el texto y los encabezados
+	{10pt}                             % altura del pie de página
+	{1cm} 
+	%encabezado
+	\lhead[]{}
+	\chead[]{}
+	\rhead[\thepage]{ Proyecto Final: Inmobiliarias}
+	
+	%pie de pagina
+	\lfoot[]{}
+	\cfoot[]{\thepage}
+	\rfoot[]{Bases de Datos}	
+	\renewcommand{\footrulewidth}{0.5pt}
+	}
+
+\pagestyle{miestilo2}
+
+
+\begin{document}
+\title{}
+	\author{}
+	\date{}
+	%\maketitle
+\thispagestyle{miestilo}
+\textcolor{white}{text}\\
+\vspace{1cm}
+\textcolor{white}{text}\\
+
+En este documento se presenta el resultado de algunas consultas que ser realizaron en la base de datos diseñada. 
+\begin{center}
+\begin{figure}[H]
+	\includegraphics[width=10cm]{logo_unam}	
+	\caption{text}
+\end{figure}
+\end{center}
+
+
+
+\newpage
+\pagestyle{miestilo2}
+
+\section{}
+Bla bla bla...
+
+\section{}
+
+
+Bla bla bla...
+
+
+
+Bla bla bla...
+
+\section{}
+
+
+Bla bla bla...
+bla
+bla
+bla
+bla
+\vspace{30cm}
+
+bala
+bla
+
+
+
+\end{document}
