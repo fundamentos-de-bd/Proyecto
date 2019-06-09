@@ -49,7 +49,34 @@
 	\date{08 de Junio del 2019}
 	\maketitle
 	
-	Se nos pide diseñar una base de datos para poder almacenar toda la información de  las inmobiliarias han proporcionado. Como el almacenamiento de la información debe estar en una base de datos relacional el diseño consta de tres partes, la primera parte corresponde al modelo Entidad-Relación, la segunda parte a la traducción del modelo entidad relación al modelo relacional y finalmente la normalización que nos permite quitar redundancia en las tablas generadas. 
+	A continuación se enlistan los archivos de este proyecto separados por carpetas:\\
+	\begin{itemize}
+		\item Doc : En este directorio se la documentación.
+		\begin{description}[leftmargin=8em,style=nextline]
+			\item[Especificacion] En este documento se explica todas las decisiones del diseño para la base de datos.
+			\item [Reporte] En este documento se muestran los resultados de la evaluación de las consultas correspondientes al archivo consultas.sql.
+			\item[dicc\_tablas] Archivo csv con el diccionario de datos.
+			\item[dicc\_constrains] Archivo csv con la informacion de las restricciones de la base de datos.
+			\item[Imagenes] Directorio que contiene todas las imagenes necesarias para la generación del reporte y la especificación. 
+		
+	    \end{description}	
+		\item Esquema : En este directorio se encuentran archivos .Dia con los diagramas correspondientes al diseño de la base de datos. 
+		\begin{description}[leftmargin=8em,style=nextline]
+			\item[modeloER] Diagrama Modelo entidad-Relación de la base de datos.
+			\item[modeloRelacional] Diagrama que corresponde a la traducción del diagrama del modelo Entidad-Relación.
+			\item[modeloNormalizado] Contiene el diagrama relacional normalizado. 
+		\end{description} 
+		\item Scripts: En este directorio se encuentran los archivos SQL.
+		\begin{description}[leftmargin=8em,style=nextline]
+			\item[tblspace] Archivo que crea un tablespace y un usuario.
+			\item[DDL] Archivo donde se crean las tablas correspondientes a la base de datos.
+			\item[MOCK\_DATA] Archivo que llena la base de datos.
+			\item[CONSULTAS] Archivo con algunas consultas.
+			\item[STORED]  Archivo que crea los disparadores y procedimientos almacenados para la base de datos.
+		\end{description}
+	\end{itemize} 
+	
+	Se nos pide diseñar una base de datos para poder almacenar toda la información que  las inmobiliarias han proporcionado. Como el almacenamiento de la información debe estar en una base de datos relacional el diseño consta de tres partes, la primera parte corresponde al modelo Entidad-Relación, la segunda parte a la traducción del modelo entidad relación al modelo relacional y finalmente la normalización que nos permite quitar redundancia en las tablas generadas. 
 	
 	\section{Modelo E/R}
 	
@@ -434,6 +461,11 @@ La siguiente figura muestra como queda el esquema normalizado.\\
     		\caption{Esquema que corresponde a la normalización del esquema de la figura \ref{MR} usando normalización de BCNF.}
     	\end{figure}
     \end{center}
+    
+    
+Finalmente, con el resultado de la normalización se crea  la base de datos usando el manejador de base de datos de Oracle, version 18.  \\  
+
+
     
 \end{document}	
 	
