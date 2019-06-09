@@ -83,7 +83,7 @@ END reporte_mensual;
 Disparador que añade registros de venta a la tabla de historial de ventas en 
 cuanto se actualiza un precio en un mes diferentes.
 */
-CREATE OR REPLACE TRIGGER add_venta_historial
+CREATE OR REPLACE TRIGGER add_ventaS_historial
     BEFORE UPDATE ON revender
     FOR EACH ROW
 BEGIN
