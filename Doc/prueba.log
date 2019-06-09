@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.7.13)  8 JUN 2019 21:52
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.7.13)  8 JUN 2019 22:08
 entering extended mode
 **./prueba.tex
 (prueba.tex
@@ -433,20 +433,20 @@ LaTeX Info: Redefining \% on input line 6.
 )
 \openout1 = `prueba.aux'.
 
-LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 56.
-LaTeX Font Info:    ... okay on input line 56.
-LaTeX Info: Redefining \. on input line 56.
-LaTeX Info: Redefining \% on input line 56.
+LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for T1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OT1/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OMS/cmsy/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 57.
+LaTeX Font Info:    ... okay on input line 57.
+LaTeX Info: Redefining \. on input line 57.
+LaTeX Info: Redefining \% on input line 57.
  ("C:\Program Files\MiKTeX 2.9\tex\context\base\supp-pdf.mkii"
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count90
@@ -503,16 +503,20 @@ Package grfext Info: Graphics extension search list:
 G,.JBIG2,.JB2,.eps]
 (grfext)             \AppendGraphicsExtensions on input line 456.
 )
+Underfull \hbox (badness 10000) in paragraph at lines 63--66
+
+ []
+
 <logo_unam.jpg, id=1, 198.24063pt x 222.33063pt>
 File: logo_unam.jpg Graphic file (type jpg)
  <use logo_unam.jpg>
-Package pdftex.def Info: logo_unam.jpg used on input line 61.
+Package pdftex.def Info: logo_unam.jpg used on input line 68.
 (pdftex.def)             Requested size: 56.9055pt x 63.81947pt.
 
 <logo_FC.jpg, id=2, 332.74312pt x 380.92313pt>
 File: logo_FC.jpg Graphic file (type jpg)
  <use logo_FC.jpg>
-Package pdftex.def Info: logo_FC.jpg used on input line 61.
+Package pdftex.def Info: logo_FC.jpg used on input line 68.
 (pdftex.def)             Requested size: 56.9055pt x 65.13968pt.
 
 
@@ -528,17 +532,17 @@ LaTeX Info: Redefining \. on input line 6.
 LaTeX Info: Redefining \% on input line 6.
 ) ) 
 Here is how much of TeX's memory you used:
- 2842 strings out of 493335
- 36733 string characters out of 3139251
+ 2843 strings out of 493335
+ 36741 string characters out of 3139251
  103682 words of memory out of 3000000
- 6341 multiletter control sequences out of 15000+200000
+ 6342 multiletter control sequences out of 15000+200000
  5141 words of font info for 19 fonts, out of 3000000 for 9000
  1141 hyphenation exceptions out of 8191
  38i,15n,43p,240b,384s stack positions out of 5000i,500n,10000p,200000b,50000s
 <C:/Program Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmbx12.pfb><C:/P
 rogram Files/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr12.pfb><C:/Program Fi
 les/MiKTeX 2.9/fonts/type1/public/amsfonts/cm/cmr17.pfb>
-Output written on prueba.pdf (3 pages, 229400 bytes).
+Output written on prueba.pdf (3 pages, 230989 bytes).
 PDF statistics:
  26 PDF objects out of 1000 (max. 8388607)
  0 named destinations out of 1000 (max. 500000)
