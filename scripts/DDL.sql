@@ -31,6 +31,10 @@ CREATE TABLE colonia (
     nombre_estado VARCHAR(20) NOT NULL
 );
 
+ALTER TABLE colonia
+    ADD CONSTRAINT ch_colonia_cp
+    CHECK (cp BETWEEN 10000 AND 99999);
+
 ALTER TABLE colonia 
     ADD CONSTRAINT fk_colonia_municipio
     FOREIGN KEY (nombre_municipio, nombre_estado)
@@ -46,6 +50,10 @@ CREATE TABLE habitantes_colonia (
     cp NUMBER(10),
     num_habitantes NUMBER(10)
 );
+
+ALTER TABLE haitantes_colonia
+    ADD CONSTRAINT ck_hab_col_non_neg
+    CHECK (num_habitantes >= 0);
 
 ALTER TABLE habitantes_colonia
     ADD CONSTRAINT fk_habitantes_colonia
@@ -72,7 +80,7 @@ ALTER TABLE transporte
 
 -- Tabla para las tiendas departamentales
 CREATE TABLE tienda_departamental (
-    nombre VARCHAR(40),
+    nombre VARCHAR(40) NOT NULL,
     descripcion VARCHAR(100),
     cp NUMBER(10)
 );
@@ -92,12 +100,20 @@ CREATE TABLE propiedad (
     id_propiedad NUMBER(10) GENERATED ALWAYS AS IDENTITY,
     calle VARCHAR(15),
     num_exterior NUMBER(10),
-    cp NUMBER(10),
-    tamanio VARCHAR(10),
+    cp NUMBER(10) NOT NULL,
+    tamanio VARCHAR(10) NOT NULL,
     fecha_construccion DATE,
     estado_propiedad VARCHAR(50),
-    valor_castral VARCHAR(10)
+    valor_castral VARCHAR(10) NOT NULL
 );
+
+ALTER TABLE propiedad
+    ADD CONSTRAINT ch_propiedad_tamanio
+    CHECK (tamanio >= 0);
+    
+ALTER TABLE propiedad
+    ADD CONSTRAINT ch_propiedad_valor_castral
+    CHECK (valor_castral >= 0);
 
 ALTER TABLE propiedad 
     ADD CONSTRAINT fk_propiedad_colonia
@@ -112,11 +128,15 @@ ALTER TABLE propiedad
 -- Tabla para los servicios
 CREATE TABLE servicio (
     id_servicio NUMBER(10) GENERATED ALWAYS AS IDENTITY,
-    tipo_servicio VARCHAR(20),
+    tipo_servicio VARCHAR(20) NOT NULL,
     monto_anual NUMBER(10) DEFAULT 0,
     id_propiedad NUMBER(10)
 );
 
+ALTER TABLE sercicio
+    ADD CONSTRAINT ch_servicio_monto_anual
+    CHECK (monto_anual >=0);
+    
 ALTER TABLE servicio
     ADD CONSTRAINT fk_servicio_propiedad
     FOREIGN KEY (id_propiedad)
@@ -160,6 +180,18 @@ CREATE TABLE inmueble (
 );
 
 ALTER TABLE inmueble
+    ADD CONSTRAINT ch_inmueble_num_banios
+    CHECK (num_banios >= 0);
+    
+ALTER TABLE inmueble
+    ADD CONSTRAINT ch_inmueble_num_habitaciones
+    CHECK (num_habitaciones >= 0);
+    
+ALTER TABLE inmueble
+    ADD CONSTRAINT ch_inmueble_num_estacionamientos
+    CHECK (num_estacionamiento >= 0);
+
+ALTER TABLE inmueble
     ADD CONSTRAINT fk_inmuelbe_propiedad
     FOREIGN KEY (id_propiedad)
     REFERENCES propiedad(id_propiedad)
@@ -175,6 +207,14 @@ CREATE TABLE casa (
     area_habitable NUMBER(5) DEFAULT 0,
     num_niveles NUMBER(5) DEFAULT 0
 );
+
+ALTER TABLE casa
+    ADD CONSTRAINT ch_casa_area_habitable
+    CHECK (area_habitable >= 0);
+    
+ALTER TABLE casa
+    ADD CONSTRAINT ch_casa_num_niveles
+    CHECK (num_niveles >= 0);
 
 ALTER TABLE casa
     ADD CONSTRAINT fk_casa_inmueble
@@ -195,6 +235,10 @@ CREATE TABLE edificio (
     gimnasio NUMBER(1) DEFAULT 0,
     piscina NUMBER(1) DEFAULT 0
 );
+
+ALTER TABLE edificio
+    ADD CONSTRAINT ch_edificio_num_departamentos
+    CHECK (num_departamentos >= 0);
 
 ALTER TABLE edificio 
     ADD CONSTRAINT ch_edificio_roof_garden
@@ -227,8 +271,12 @@ CREATE TABLE departamento (
     area_lavado NUMBER(1) DEFAULT 0,
     numero VARCHAR(10),
     balcon NUMBER(1) DEFAULT 0,
-    piso NUMBER(5)
+    piso NUMBER(5) NOT NULL
 );
+
+ALTER TABLE departamento
+    ADD CONSTRAINT ch_departamento_numero
+    CHECK (numero >= 0);
 
 ALTER TABLE departamento 
     ADD CONSTRAINT ch_departamento_area_lavado
@@ -258,10 +306,14 @@ ALTER TABLE departamento
 CREATE TABLE seguro (
     num_poliza NUMBER(10),
     id_propiedad NUMBER(10),
-    cobertura VARCHAR(20),
+    cobertura VARCHAR(20) NOT NULL,
     monto_anual NUMBER(10) DEFAULT 0,
-    empresa VARCHAR(30)
+    empresa VARCHAR(30) NOT NULL
 );
+
+ALTER TABLE seguro
+    ADD CONSTRAINT ch_seguro_monto_anual
+    CHECK (monto_anual >= 0);
 
 ALTER TABLE seguro
     ADD CONSTRAINT fk_seguro_propiedad
@@ -276,7 +328,7 @@ ALTER TABLE seguro
 -- Tabla para los dueños
 CREATE TABLE duenio (
     id_duenio NUMBER(10) GENERATED ALWAYS AS IDENTITY,
-    monto_invertido NUMBER(10)
+    monto_invertido NUMBER(10) DEFAULT 0
 );
 
 ALTER TABLE duenio
@@ -287,10 +339,14 @@ ALTER TABLE duenio
 CREATE TABLE ser_duenio (
     id_propiedad NUMBER(10),
     id_duenio NUMBER(10),
-    fecha_inicio DATE DEFAULT CURRENT_DATE,
+    fecha_inicio DATE DEFAULT CURRENT_DATE NOT NULL,
     fecha_fin DATE,
-    monto_compra NUMBER(10)
+    monto_compra NUMBER(10) NOT NULL
 );
+
+ALTER TABLE ser_duenio
+    ADD CONSTRAINT ch_ser_duenio_fechas
+    CHECK ((fecha_fin IS NULL) OR (fecha_inicio < fecha_fin));
 
 ALTER TABLE ser_duenio 
     ADD CONSTRAINT fk_ser_duenio_duenio
@@ -308,8 +364,8 @@ ALTER TABLE ser_duenio
 CREATE TABLE persona (
     curp VARCHAR(20),
     fecha_nac DATE,
-    nombre VARCHAR(20),
-    paterno VARCHAR(20),
+    nombre VARCHAR(20) NOT NULL,
+    paterno VARCHAR(20) NOT NULL,
     materno VARCHAR(20)
 );
 
@@ -373,8 +429,12 @@ CREATE TABLE revender (
     id_propiedad NUMBER(10),
     id_duenio NUMBER(10),
     id_inmobiliaria NUMBER(10),
-    precio NUMBER(10)
+    precio NUMBER(10) NOT NULL
 );
+
+ALTER TABLE revender
+    ADD CONSTRAINT ch_revender_precio
+    CHECK (precio >= 0);
 
 ALTER TABLE revender
     ADD CONSTRAINT fk_revender_propiedad
@@ -394,8 +454,12 @@ CREATE TABLE venta_historial (
     id_duenio NUMBER(10),
     id_inmobiliaria NUMBER(10),
     fecha DATE DEFAULT CURRENT_DATE,
-    precio NUMBER(10)
+    precio NUMBER(10) NOT NULL
 );
+
+ALTER TABLE venta_historial
+    ADD CONSTRAINT ch_venta_historial_precio
+    CHECK (precio >= 0);
 
 ALTER TABLE venta_historial
     ADD CONSTRAINT fk_venta_historial_propiedad
@@ -412,8 +476,8 @@ ALTER TABLE venta_historial
 -- Tabla para los asesores
 CREATE TABLE asesor (
     rfc VARCHAR(15),
-    nombre VARCHAR(20),
-    paterno VARCHAR(20),
+    nombre VARCHAR(20) NOT NULL,
+    paterno VARCHAR(20) NOT NULL,
     materno VARCHAR(20),
     fecha_nac VARCHAR(20)
 );
@@ -427,7 +491,7 @@ CREATE TABLE direccion_asesor (
     rfc VARCHAR(15),
     calle VARCHAR(20),
     numero VARCHAR(20),
-    cp NUMBER(10)
+    cp NUMBER(10) NOT NULL
 );
 
 ALTER TABLE direccion_asesor
@@ -439,10 +503,14 @@ ALTER TABLE direccion_asesor
 CREATE TABLE vender (
     id_propiedad NUMBER(10),
     rfc VARCHAR(20),
-    precio NUMBER(10),
+    precio NUMBER(10) NOT NULL,
     fecha DATE DEFAULT CURRENT_DATE,
     porcentaje_comision NUMBER(5)
 );
+
+ALTER TABLE vender
+    ADD CONSTRAINT ch_vender_precio
+    CHECK (precio >= 0);
 
 ALTER TABLE vender
     ADD CONSTRAINT ck_vender_comision
