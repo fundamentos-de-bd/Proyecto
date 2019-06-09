@@ -169,15 +169,28 @@ SELECT estado, AVG(valor_castral) promedio_valor_castral
 --Buscar la propiedad que ha tenido más dueños registrada y reportar los
 --datos de cada dueño que ha tenido.
 --===========================================================================
-SELECT 
-    FROM
-    WHERE num_propietarios = 
-    SELECT MAX(num_propietarios)
-    FROM (
-        SELECT id_propiedad, COUNT(curp) num_propietarios
-        FROM ((persona NATURAL JOIN propietario) NATURAL JOIN (duenio NATURAL JOIN ser_duenio))
-        GROUP BY id_propiedad;
-    )
+SELECT curp, nombre, paterno, materno, id_propiedad
+    FROM ((persona NATURAL JOIN propietario) NATURAL JOIN (duenio NATURAL JOIN ser_duenio))
+    WHERE id_propiedad IN 
+    (
+        SELECT id_propiedad
+            FROM 
+            (
+                SELECT id_propiedad, COUNT(curp) num_propietarios
+                    FROM ((persona NATURAL JOIN propietario) NATURAL JOIN (duenio NATURAL JOIN ser_duenio))
+                    GROUP BY id_propiedad
+            )
+            WHERE num_propietarios =
+            (
+                SELECT MAX(num_propietarios)
+                    FROM 
+                    (
+                        SELECT id_propiedad, COUNT(curp) num_propietarios
+                            FROM ((persona NATURAL JOIN propietario) NATURAL JOIN (duenio NATURAL JOIN ser_duenio))
+                            GROUP BY id_propiedad
+                    )
+            )
+    );
 
 
 
