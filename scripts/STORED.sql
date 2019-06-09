@@ -80,6 +80,19 @@ BEGIN
 END reporte_mensual;
 
 /*
+Disparador que añade registros de venta a la tabla de historial de ventas en 
+cuanto se actualiza un precio en un mes diferentes.
+*/
+CREATE OR REPLACE TRIGGER add_venta_historial
+    BEFORE UPDATE ON revender
+    FOR EACH ROW
+BEGIN
+    IF INSERTING AND NOT (EXTRACT(MONTH FROM :OLD.FECHA) = EXTRACT(MONTH FROM :NEW.FECHA)) THEN
+        INSERT INTO venta_historial VALUES (:NEW.id_propiedad, :NEW.id_duenio, :NEW.id_inmobiliaria, :OLD.fecha, :OLD.precio);
+    END IF;  
+END;
+
+/*
 Disparador que revisa que una propiedad no tenga múltiples dueños al mismo tiempo
 */
 CREATE OR REPLACE TRIGGER ch_unique_owner_time 
@@ -173,3 +186,7 @@ BEGIN
         RAISE_APPLICATION_ERROR(-20003, 'UNA INMOBILIARIA NO PUEDE SER PROPIETARIO');
     END LOOP;
 END;
+
+SELECT *
+   FROM USER_TAB_COLUMNS JOIN USER_CONSTRAINTS 
+       ON USER_TAB_COLUMNS.table_name = USER_CONSTRAINTS.table_name ;
