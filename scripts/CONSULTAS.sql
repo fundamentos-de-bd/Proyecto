@@ -110,14 +110,16 @@ SELECT id_propiedad, calle, num_exterior, cp, tamanio, fecha_construccion,
 SELECT *
     FROM ((SELECT id_propiedad, id_duenio
             FROM ((SELECT MIN(fecha_inicio) hola
-                    FROM ser_duenio) CROSS JOIN ser_duenio)
+                    FROM ser_duenio
+                    WHERE id_propiedad IN (SELECT id_propiedad FROM servicio)) CROSS JOIN ser_duenio)
             WHERE hola = fecha_inicio AND fecha_fin IS NULL)
         NATURAL JOIN propiedad NATURAL JOIN duenio
         NATURAL JOIN 
         (SELECT id_propiedad, SUM(monto_anual) anualidad_servicios
             FROM ((SELECT id_propiedad, id_duenio
                     FROM ((SELECT MIN(fecha_inicio) hola
-                            FROM ser_duenio) CROSS JOIN ser_duenio)
+                            FROM ser_duenio
+                            WHERE id_propiedad IN (SELECT id_propiedad FROM servicio)) CROSS JOIN ser_duenio)
                     WHERE hola = fecha_inicio AND fecha_fin IS NULL)
                     NATURAL JOIN servicio)
             GROUP BY id_propiedad)
