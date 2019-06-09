@@ -145,27 +145,67 @@ SELECT *
                         FOR amenidad
                         IN (roof_garden, elevador, salon_eventos, gimnasio, piscina)
                 )
-            HAVING SUM(numero) >= 1
-            GROUP BY id_edificio)
+            GROUP BY id_edificio
+            HAVING SUM(numero) >= 1)
             NATURAL JOIN departamento NATURAL JOIN propiedad
     ORDER BY valor_castral;
 --===========================================================================
 
 
 --Mostrar el promedio de los valores castrales de las propiedades por estado
+SELECT estado, AVG(valor_castral) promedio_valor_castral
+    FROM propiedad
+        NATURAL JOIN 
+        (SELECT cp, estado
+            FROM colonia
+                NATURAL JOIN
+                (SELECT nombre nombre_municipio, nombre_estado estado FROM municipio)
+        )
+    GROUP BY estado;
 
 --===========================================================================
 
 
---Buscar la propeidad que ha tenido más dueños registrada y reportar los
+--Buscar la propiedad que ha tenido más dueños registrada y reportar los
 --datos de cada dueño que ha tenido.
 --===========================================================================
+SELECT 
+    FROM
+    WHERE num_propietarios = 
+    SELECT MAX(num_propietarios)
+    FROM (
+        SELECT id_propiedad, COUNT(curp) num_propietarios
+        FROM ((persona NATURAL JOIN propietario) NATURAL JOIN (duenio NATURAL JOIN ser_duenio))
+        GROUP BY id_propiedad;
+    )
+
 
 
 --Buscar la inmoviliaria que es dueña de la mayor cantidad de propiedades 
 --===========================================================================
+SELECT id_inmobiliaria, num_propiedades
+    FROM inmobiliaria 
+        NATURAL JOIN
+    (
+        SELECT id_duenio, COUNT(id_propiedad) num_propiedades
+            FROM ser_duenio
+        GROUP BY id_duenio
+    )
+    WHERE num_propiedades = 
+    (
+    SELECT MAX(num_propiedades)
+    FROM inmobiliaria 
+        NATURAL JOIN
+    (
+        SELECT id_duenio, COUNT(id_propiedad) num_propiedades
+            FROM ser_duenio
+        GROUP BY id_duenio
+    )
+    );
 
-
---Dar el total de costos de las 'inversiones' que ha hecho la inmoviliaria X
+--Dar el total de costos de las 'inversiones' que ha hecho la inmoviliaria 1
 --en las propiedades de las que es dueña
 --===========================================================================
+SELECT id_inmobiliaria, SUM(monto_invertido) total_inversion
+    FROM inmobiliaria NATURAL JOIN duenio
+    GROUP BY id_inmobiliaria;
